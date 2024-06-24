@@ -8,6 +8,7 @@ use Entities;
 
 class Game {
     use Raylib::Keyboard;
+    use Map;
 
     field $width : param  = 800;
     field $height : param = 600;
@@ -16,13 +17,14 @@ class Game {
 
     field $app = Raylib::App->window( $width, $height, $name );
 
+    field $map = Map->new;
+
     field $player = Entity->new(
-        location => [ $width / 2, $height / 2 ],
+        location => $map->entrance,
         size     => $size,
     );
 
     field @actions;
-
     field $key_map = {
         KEY_UP()    => sub { push @actions => MoveAction->new( dy => -$size ) },
         KEY_DOWN()  => sub { push @actions => MoveAction->new( dy => $size ) },
@@ -33,13 +35,13 @@ class Game {
     field $keyboard = Raylib::Keyboard->new( key_map => $key_map );
 
     method update() {
-        $_->execute($player) for @actions;
+        $_->execute( $player, $map ) for @actions;
         @actions = ();
     }
 
     method render() {
         $app->clear();
-        $app->draw_objects($player);
+        $app->draw_objects( $map, $player );
     }
 
     method run() {
