@@ -17,14 +17,45 @@ class Game {
 
     field $app = Raylib::App->window( $width, $height, $name );
 
-    field $map = Map->new;
+    field $map = Map->new( tile_size => $size );
 
-    field $player = Entity->new(
+    field @stuff;
+
+    ADJUST {
+
+        for (qw(c d f g)) {
+            push @stuff => Boon->new(
+                location => $map->spawn_point($_),
+                icon     => 'B',
+                size     => $size
+            );
+        }
+
+        for (qw(e h k)) {
+            push @stuff => Threat->new(
+                location => $map->spawn_point($_),
+                icon     => 'T',
+                size     => $size
+            );
+        }
+
+        for (qw(a i l)) {
+            push @stuff => Obstacle->new(
+                location => $map->spawn_point($_),
+                icon     => 'O',
+                size     => $size
+            );
+        }
+    }
+
+    field $player = Player->new(
         location => $map->entrance,
         size     => $size,
     );
 
     field @actions;
+    method add_action($action) { push @actions => $action }
+
     field $key_map = {
         KEY_UP()    => sub { push @actions => MoveAction->new( dy => -$size ) },
         KEY_DOWN()  => sub { push @actions => MoveAction->new( dy => $size ) },
@@ -34,14 +65,21 @@ class Game {
 
     field $keyboard = Raylib::Keyboard->new( key_map => $key_map );
 
+    method entity_at( $x, $y ) {
+        my ($e) =
+          grep { my $l = [ $_->location ]; $l->[0] == $x && $l->[1] == $y }
+          @stuff;
+        return $e;
+    }
+
     method update() {
-        $_->execute( $player, $map ) for @actions;
+        $_->execute( $player, $map, $self ) for @actions;
         @actions = ();
     }
 
     method render() {
         $app->clear();
-        $app->draw_objects( $map, $player );
+        $app->draw_objects( $map, $player, @stuff );
     }
 
     method run() {

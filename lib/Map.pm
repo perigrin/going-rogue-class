@@ -4,7 +4,7 @@ use experimental 'class';
 use Raylib::App;
 
 class Map {
-    field $tile_size : param = 10;
+    field $tile_size : param;
 
     field $wall_glyph = Raylib::Text->new(
         text  => '#',
@@ -42,7 +42,7 @@ class Map {
     #                                                                              #
     #                                                                              #
     #                                                                              #
-    #     a           b           c              k                                 #
+    #     a           b           c              i                                 #
     #                                                                              #
     #                                                                              #
     #                                                                              #
@@ -65,7 +65,7 @@ class Map {
            #               #                               #                #
            #               #                               #                #
            #               #              #                #                #
-           #       h       #       g      #        ^5      #       j        #
+           #       h       #       g      #        T       #       j        #
            #               #              #                #                #
            #               #              #                #                #
            #               #              #                #                #
@@ -81,7 +81,32 @@ class Map {
         $tiles[$y][$x] eq '#';
     }
 
-    method entrance() { [ 60, 281 ] }
+    field %spawn_points = ();
+    ADJUST {
+        for my $y ( 0 .. $#tiles ) {
+            my $row = $tiles[$y];
+            for my $x ( 0 .. $#$row ) {
+                next unless $row->[$x] =~ /[a-zA-Z]/;
+                my $label = $row->[$x];
+                $spawn_points{$label} = [ $x * $tile_size, $y * $tile_size ];
+            }
+        }
+        $spawn_points{'entrance'} = [ 3 * $tile_size, 28 * $tile_size ];
+    }
+
+    method spawn_point($name) {
+        my $point = %spawn_points{$name};
+        return $point;
+    }
+
+    method is_spawn_point( $x, $y ) {
+        for my $point ( values %spawn_points ) {
+            return 1 if $point->[0] == $x && $point->[1] == $y;
+        }
+        return 0;
+    }
+
+    method entrance() { $spawn_points{'entrance'} }
 
     method draw() {
         for my $y ( 0 .. $#tiles ) {
