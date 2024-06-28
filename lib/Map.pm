@@ -94,10 +94,7 @@ class Map {
         $spawn_points{'entrance'} = [ 3 * $tile_size, 28 * $tile_size ];
     }
 
-    method spawn_point($name) {
-        my $point = %spawn_points{$name};
-        return $point;
-    }
+    method spawn_point($name) { $spawn_points{$name}; }
 
     method is_spawn_point( $x, $y ) {
         for my $point ( values %spawn_points ) {

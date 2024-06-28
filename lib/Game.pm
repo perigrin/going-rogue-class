@@ -3,11 +3,12 @@ use experimental 'class';
 
 use Raylib::App;
 
-use Actions;
-use Entities;
-
 class Game {
     use Raylib::Keyboard;
+
+    use Actions;
+    use Components;
+    use Entities;
     use Map;
 
     field $width : param  = 800;
@@ -19,43 +20,78 @@ class Game {
 
     field $map = Map->new( tile_size => $size );
 
-    field @stuff;
+    field @entities;
+
+    method add_entity($entity) {
+        push @entities => $entity;
+    }
+
+    method remove_entity($entity) {
+        @entities = grep { $_ != $entity } @entities;
+        $entity->reap($self);
+    }
+
+    my $add_boon = method(%config) {
+        push @entities => Entity->new(
+            %config,
+            icon => 'B',
+            size => $size
+        );
+    };
+
+    my $add_threat = method(%config) {
+        push @entities => Entity->new(
+            %config,
+            icon       => 'T',
+            size       => $size,
+            components => {
+                'CombatComponent' => CombatComponent->new( str => rand(4) + 1 ),
+                'HealthComponent' => HealthComponent->new(),
+            },
+        );
+    };
+
+    my $add_obstacle = method(%config) {
+        push @entities => Entity->new(
+            %config,
+            icon       => 'O',
+            size       => $size,
+            components => {
+                'CombatComponent' => CombatComponent->new(),
+                'HealthComponent' => HealthComponent->new()
+            },
+        );
+    };
 
     ADJUST {
-
         for (qw(c d f g)) {
-            push @stuff => Boon->new(
-                location => $map->spawn_point($_),
-                icon     => 'B',
-                size     => $size
-            );
+            $self->$add_boon( location => $map->spawn_point($_) );
         }
 
         for (qw(e h k)) {
-            push @stuff => Threat->new(
-                location => $map->spawn_point($_),
-                icon     => 'T',
-                size     => $size
-            );
+            $self->$add_threat( location => $map->spawn_point($_) );
         }
 
         for (qw(a i l)) {
-            push @stuff => Obstacle->new(
-                location => $map->spawn_point($_),
-                icon     => 'O',
-                size     => $size
-            );
+            $self->$add_obstacle( location => $map->spawn_point($_) );
         }
     }
 
-    field $player = Player->new(
-        location => $map->entrance,
-        size     => $size,
+    field $player = Entity->new(
+        location   => $map->entrance,
+        size       => $size,
+        icon       => '@',
+        components => {
+            'InventoryComponent' => InventoryComponent->new(),
+            'CombatComponent'    => CombatComponent->new(),
+            'HealthComponent'    => HealthComponent->new(),
+        }
     );
 
     field @actions;
     method add_action($action) { push @actions => $action }
 
+    # these need to push directly because $self doesn't exist yet
     field $key_map = {
         KEY_UP()    => sub { push @actions => MoveAction->new( dy => -$size ) },
         KEY_DOWN()  => sub { push @actions => MoveAction->new( dy => $size ) },
@@ -67,19 +103,24 @@ class Game {
 
     method entity_at( $x, $y ) {
         my ($e) =
-          grep { my $l = [ $_->location ]; $l->[0] == $x && $l->[1] == $y }
-          @stuff;
+          grep { my $l = $_->location; $l->[0] == $x && $l->[1] == $y }
+          @entities;
         return $e;
     }
 
+    method log($message) {
+        warn "$message\n";
+    }
+
     method update() {
-        $_->execute( $player, $map, $self ) for @actions;
-        @actions = ();
+        while ( my $action = shift @actions ) {
+            $action->execute( $player, $map, $self );
+        }
     }
 
     method render() {
         $app->clear();
-        $app->draw_objects( $map, $player, @stuff );
+        $app->draw_objects( $map, $player, @entities );
     }
 
     method run() {
