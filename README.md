@@ -17,6 +17,7 @@ use a system library, or a patched version of Alien::raylib.
 ```
 # Install perlbrew
 curl -L https://install.perlbrew.pl | bash
+source ~/perl5/perlbrew/etc/bashrc
  
 # Initialize
 perlbrew init
