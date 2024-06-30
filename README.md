@@ -30,6 +30,7 @@ perlbrew install 5.40.0
 
 # Switch to perl 5.40.0
 perlbrew switch 5.40.0
+cpan App::cpanminus
 
 # Install Alien::RayLib
 sudo apt-get install -y libasound2-dev \
