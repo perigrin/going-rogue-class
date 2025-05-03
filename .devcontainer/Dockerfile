@@ -15,23 +15,9 @@ RUN apt-get update && apt-get install -y \
     libgl1-mesa-dev \
     libglu1-mesa-dev \
     pkg-config \
+    xauth \
     && rm -rf /var/lib/apt/lists/*
 
 # Install cpanminus and required modules
-RUN cpanm App::cpm \
-    && mkdir -p /workspace
-
-# Install modified Alien::raylib
+RUN mkdir -p /workspace
 WORKDIR /workspace
-
-# Create a non-root user for development
-ARG USERNAME=developer
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
-
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
-    && chown -R $USERNAME:$USERNAME /workspace
-
-# Switch to the developer user
-USER $USERNAME
