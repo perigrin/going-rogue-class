@@ -1,0 +1,36 @@
+{
+    "name": "Perl 5.40.0 Roguelike Development",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": "."
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "bscan.perlnavigator",
+                "ms-vscode.cpptools",
+                "ms-azuretools.vscode-docker"
+            ],
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "perl.perlPath": "/usr/local/bin/perl",
+                "perl.perlInc": [
+                    "${workspaceFolder}/lib",
+                    "${workspaceFolder}/local/lib/perl5"
+                ],
+                "editor.tabSize": 4
+            }
+        }
+    },
+    "forwardPorts": [],
+    "postCreateCommand": "cd ${containerWorkspaceFolder} && cpm install --with-recommends",
+    "remoteUser": "developer",
+    "containerUser": "developer",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+    "workspaceFolder": "/workspace",
+    "features": {
+        "ghcr.io/devcontainers/features/git:1": {
+            "version": "latest"
+        }
+    }
+}
