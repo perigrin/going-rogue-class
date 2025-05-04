@@ -36,7 +36,7 @@
       "onAutoForward": "openBrowser"
     }
   },
-  "postCreateCommand": "cd ${containerWorkspaceFolder} && cpanm --installdeps .",
+  "postCreateCommand": "cd ${containerWorkspaceFolder} && cpanm -l local --installdeps .",
   "features": {
     "ghcr.io/devcontainers/features/git:1": {
       "version": "latest"
