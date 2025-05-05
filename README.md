@@ -2,6 +2,14 @@
 
 ## Getting Started
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/perigrin/perl-game-lab)
+
+The codespace has noVNC installed, you can access the desktop by going to [http://localhost:6080](http://localhost:6080).
+
+To start the demo game simply run `perl bin/game.pl`
+
+### On your own machine
+
 On OSX you need install with homebrew and App::cpm:
 
 ```perl
