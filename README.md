@@ -6,7 +6,9 @@
 
 The codespace has noVNC installed, you can access the desktop by going to [http://localhost:6080](http://localhost:6080).
 
-To start the demo game simply run `perl bin/game.pl`
+Once you have opened the desktop, right-click and open a Terminal. 
+
+Then, to start the demo game, run `carton exec bin/game.pl`.
 
 ### On your own machine
 
