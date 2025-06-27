@@ -36,7 +36,7 @@
       "onAutoForward": "openBrowser"
     }
   },
-  "postCreateCommand": "cd ${containerWorkspaceFolder} && cpanm -l local --installdeps . && carton install`",
+  "postCreateCommand": "cd ${containerWorkspaceFolder} && cpanm -l local --installdeps . && carton install",
   "features": {
     "ghcr.io/devcontainers/features/git:1": {
       "version": "latest"
