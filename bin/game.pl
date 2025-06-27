@@ -1,4 +1,4 @@
-#!/bin/perl
+#!/usr/bin/env perl
 use local::lib qw(local);
 use lib 'lib';
 use Game;
