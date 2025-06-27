@@ -19,5 +19,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install cpanminus and required modules
+RUN cpamn Carton
 RUN mkdir -p /workspace
 WORKDIR /workspace
+RUN carton install
