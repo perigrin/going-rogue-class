@@ -2,11 +2,13 @@
 
 ## Getting Started
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/perigrin/perl-game-lab)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/matthewpersico/going-rogue-class)
 
 The codespace has noVNC installed, you can access the desktop by going to [http://localhost:6080](http://localhost:6080).
 
-To start the demo game simply run `perl bin/game.pl`
+Once you have opened the desktop, right-click and open a Terminal. 
+
+Then, to start the demo game, run `carton exec bin/game.pl`.
 
 ### On your own machine
 
@@ -82,13 +84,13 @@ perl bin/game.pl
 # Install perlbrew
 curl -L https://install.perlbrew.pl | bash
 source ~/perl5/perlbrew/etc/bashrc
- 
+
 # Initialize
 perlbrew init
- 
+
 # See what is available
 perlbrew available
- 
+
 # Install some Perls
 perlbrew install 5.40.0
 
@@ -113,4 +115,3 @@ cd going-rogue-class
 cpanm Raylib::FFI
 perl bin/game.pl
 ```
-
